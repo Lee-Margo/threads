@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            box-sizing: border-box;
+        }
+        body{
+            margin: 5px 100px;
+        }
+        .article-input{
+            height: 50px;
+            width: 200px;
+            
+        }
+        .article{
+            margin: 20px 0px 2px;
+            font-size: 20px;
+        }
+        .bottom{
+            border: 1px solid black;
+            margin: 20px 0px;
+        }
+        .reply-btn{
+            text-align: right;
+            margin-right: 5px;
+        }
+        .reply-msgs{
+            background-color: lightgray;
+            padding: 5px;
+            margin: 5px;
+        }
+        .reply{
+            font-size: 12px;
+            margin: 10px 5px;
+            border-bottom: 1px dashed black;
+        }
+    </style>
+</head>
+<body>
+    <div class="top">
+        <textarea name="" id="" cols="30" rows="10" class="article-input" placeholder="文章"></textarea>
+        <button type="button" class="submit">送出</button>
+    </div>
+    <div class="data-show">
+    </div>
+   
+
+    <script>
+        const article = document.querySelector('.article-input');
+        const articleBtn = document.querySelector('.submit');
+        const dataShow = document.querySelector('.data-show');
+        const msgShow = document.querySelector('.msg-show');
+        
+        let arr =[
+            {
+                id:1,
+                text: '要補小年夜的課也太糟糕了吧?!',
+                msg:[{msgId:1, msgText:'對阿',},
+                    {msgId:2, msgText:'太扯了',}],
+            }];
+        output(arr);
+        
+
+        // 寫文章的按鈕
+        articleBtn.addEventListener('click',()=>{
+            const text = article.value;
+            let id = 0;
+            if(arr.length !==0){
+                id = arr[arr.length-1].id;
+            };
+            if(text != ''){
+                const addArr = {
+                    id:id+1,
+                    text:text,
+                    msg:[],
+                };
+                arr.push(addArr);
+                
+            };
+            output(arr);
+            article.value = ''; 
+        })
+        
+        
+
+        //回覆的按鈕
+        function replyBtn(id){
+            arr.map((item)=>{
+                if (item.id == id){
+                    let msgId = 0;
+                    if(item.msg.length !==0){
+                        msgId = item.msg[item.msg.length-1].msgId;
+                    };
+                    const replyContent = prompt('回覆留言');
+                    
+                    if(replyContent != ''){
+                        const addMsg = {
+                            msgId:msgId+1,
+                            msgText:replyContent,
+                        };
+                        item.msg.push(addMsg);
+                    };
+                }
+            });
+            output(arr);
+        };
+
+        
+        function output(arrPrint){
+            dataShow.innerHTML  = '';
+            arrPrint.forEach((item) => {
+                // 文章本體
+                let html = `
+                    <div class="bottom">
+                        <div class="bot-top">
+                            <div class="article">${item.text}</div>
+                            <div class="reply-btn"><button onclick="replyBtn(${item.id})">回覆</button></div>
+                        </div>
+                            `;
+                if (item.msg.length !== 0) {
+                        // 留言的css-因為padding所以加在外面
+                        html += `<div class="reply-msgs">`
+                        // 印出所有的留言回覆訊息
+                        item.msg.forEach((messages) => {
+                                html += ` <div class="reply"> ${messages.msgText}</div>`;
+                        });    
+                        html +=  ` </div>  `         
+                }
+                // 關文章本體
+                html += `</div>`;
+                dataShow.innerHTML += html;
+            });
+        }
+    </script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
